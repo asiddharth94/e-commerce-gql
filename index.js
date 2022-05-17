@@ -285,16 +285,24 @@ const typeDefs = gql`
   type Query {
     hello: String
     products: [Product!]!
-    product(id: ID!): Product
+    product(id: ID!): Product # We did not made this non-nullable (!) because client might provide an invalid id , in that case null would be returned
+    categories: [Category!]!
+    category(id: ID!): Category
   }
 
   type Product {
+    id: ID!
     name: String!
     description: String!
     image: String!
     quantity: Int!
     price: Float!
     onSale: Boolean!
+  }
+
+  type Category {
+    id: ID!
+    name: String!
   }
 `;
 
@@ -309,6 +317,13 @@ const resolvers = {
     product: (parent, args, context) => {
       const { id } = args;
       return products.find((product) => product.id === id);
+    },
+    categories: () => {
+      return categories;
+    },
+    category: (parent, args, context) => {
+      const { id } = args;
+      return categories.find((category) => category.id === id);
     },
   },
 };
